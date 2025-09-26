@@ -12,6 +12,10 @@ typedef struct Sala {
     struct Sala* direita;  // ponteiro para sala à direita
 } Sala;
 
+// Handler opcional para comandos extras durante a exploração.
+// Deve retornar 1 se o comando foi tratado; 0 caso contrário.
+typedef int (*SalaExtraCmdHandler)(char cmd, struct Sala* atual, void* ctx);
+
 // Cria uma sala com "nome" e filhos nulos.
 // Retorna um ponteiro alocado dinamicamente.
 Sala* criarSala(const char* nome);
@@ -23,6 +27,10 @@ void conectarSalas(Sala* pai, Sala* esquerda, Sala* direita);
 // Ao alcançar um nó-folha, permite reiniciar (r) ou sair (s).
 // Ao finalizar, exibe o caminho percorrido.
 void explorarSalas(Sala* raiz);
+
+// Versão com comandos extras: permite tratar comandos adicionais via handler
+// e inclui um texto extra em ajuda/opções (helpExtra), se fornecido.
+void explorarSalasComExtras(Sala* raiz, SalaExtraCmdHandler handler, void* ctx, const char* helpExtra);
 
 // Modo demonstração: executa passos automaticamente a partir de uma string
 // Exemplo: "eed" (esquerda, esquerda, direita). Aceita 'e', 'd' e 's'.

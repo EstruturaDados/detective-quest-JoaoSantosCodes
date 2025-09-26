@@ -8,10 +8,10 @@ typedef struct {
     const char** nomes;
     size_t usado;
     size_t cap;
-} Trilho;
+} Trilha;
 
-static void trilho_init(Trilho* t) { t->nomes = NULL; t->usado = 0; t->cap = 0; }
-static void trilho_push(Trilho* t, const char* nome) {
+static void trilha_init(Trilha* t) { t->nomes = NULL; t->usado = 0; t->cap = 0; }
+static void trilha_push(Trilha* t, const char* nome) {
     if (t->usado + 1 > t->cap) {
         size_t novo = t->cap ? t->cap * 2 : 8;
         const char** tmp = (const char**)realloc(t->nomes, novo * sizeof(const char*));
@@ -20,8 +20,8 @@ static void trilho_push(Trilho* t, const char* nome) {
     }
     t->nomes[t->usado++] = nome;
 }
-static void trilho_clear(Trilho* t) { free(t->nomes); t->nomes = NULL; t->usado = t->cap = 0; }
-static void trilho_print(const Trilho* t) {
+static void trilha_clear(Trilha* t) { free(t->nomes); t->nomes = NULL; t->usado = t->cap = 0; }
+static void trilha_print(const Trilha* t) {
     if (!t->usado) { printf("(sem passos)\n"); return; }
     for (size_t i = 0; i < t->usado; ++i) {
         printf("%s%s", t->nomes[i], (i + 1 < t->usado ? " -> " : "\n"));
@@ -58,7 +58,7 @@ static void explorarInterno(Sala* raiz, int modoDemo, const char* script) {
     if (!raiz) { printf("Mapa vazio.\n"); return; }
     Sala* atual = raiz;
     char opc;
-    Trilho trilha; trilho_init(&trilha); trilho_push(&trilha, atual->nome);
+    Trilha trilha; trilha_init(&trilha); trilha_push(&trilha, atual->nome);
 
     if (!modoDemo) printf("Bem-vindo(a) ao Detective Quest!\n");
 
@@ -69,14 +69,14 @@ static void explorarInterno(Sala* raiz, int modoDemo, const char* script) {
         if (!atual->esquerda && !atual->direita) {
             printf("Voce chegou ao fim do caminho.\n");
             printf("Caminho percorrido: ");
-            trilho_print(&trilha);
+            trilha_print(&trilha);
             if (modoDemo) { break; }
             // loop de reinicio
             for (;;) {
                 printf("Deseja reiniciar do inicio (%s)? (r=recomecar, s=sair): ", raiz->nome);
                 if (scanf(" %c", &opc) != 1) { limparEntrada(); continue; }
                 if (opc == 'r' || opc == 'R') {
-                    atual = raiz; trilho_clear(&trilha); trilho_init(&trilha); trilho_push(&trilha, atual->nome);
+                    atual = raiz; trilha_clear(&trilha); trilha_init(&trilha); trilha_push(&trilha, atual->nome);
                     break; // sai do loop de reinicio e continua exploracao
                 } else if (opc == 's' || opc == 'S') {
                     sair = 1; break; // encerra
@@ -108,15 +108,15 @@ static void explorarInterno(Sala* raiz, int modoDemo, const char* script) {
             break;
         } else if (opc == 'p' || opc == 'P') {
             printf("Caminho percorrido: ");
-            trilho_print(&trilha);
+            trilha_print(&trilha);
             continue;
         } else if (opc == 'h' || opc == 'H') {
             printf("Ajuda: e=esquerda, d=direita, s=sair, p=trilha, h=ajuda.\n");
             continue;
         } else if (opc == 'e' || opc == 'E') {
-            if (atual->esquerda) { atual = atual->esquerda; trilho_push(&trilha, atual->nome);} else { printf("Nao ha sala a esquerda.\n"); }
+            if (atual->esquerda) { atual = atual->esquerda; trilha_push(&trilha, atual->nome);} else { printf("Nao ha sala a esquerda.\n"); }
         } else if (opc == 'd' || opc == 'D') {
-            if (atual->direita) { atual = atual->direita; trilho_push(&trilha, atual->nome);} else { printf("Nao ha sala a direita.\n"); }
+            if (atual->direita) { atual = atual->direita; trilha_push(&trilha, atual->nome);} else { printf("Nao ha sala a direita.\n"); }
         } else {
             if (modoDemo) {
                 printf("(demo) comando invalido: %c (ignorado)\n", opc);
@@ -125,7 +125,7 @@ static void explorarInterno(Sala* raiz, int modoDemo, const char* script) {
             }
         }
     }
-    trilho_clear(&trilha);
+    trilha_clear(&trilha);
 }
 
 void explorarSalas(Sala* raiz) { explorarInterno(raiz, 0, NULL); }
